@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Forgery Alert</title>
+    <link rel="stylesheet" href="style.css">
+    <form method="GET" action="/classify" enctype="application/x-www-form-urlencoded"></form>
+    <style>
+        .container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Audio Forgery Alert: Uncovering Artificial Audio with DeepFake Detection</h1>
+        <form id="upload-form">
+            <input type="file" name="audio_file" accept=".mp3,.mp4" required>
+            <input type="hidden" id="audio_file" name="audio_file">
+            <button type="submit">Check the Audio</button>
+        </form>
+        <div id="results"></div>
+    </div>
+    <script>
+        
+        async function uploadFile(file) {
+            const formData = new FormData();
+            formData.append('audio_file', file);
+            document.getElementById('audio_file').value = audio_file;
+            const formData = new FormData();
+            formData.append('audio_file', audio_file);
+            const response = await fetch('/classify', { method: 'GET', body: formData });
+            const response = await fetch('/classify', { method: 'POST', body: formData });
+            const probabilities = await response.json();
+            const result = probabilities[0];
+            const percentage = result * 100;
+            displayResult(percentage);
+        }
+
+        function displayResult(percentage) {
+            const resultArea = document.getElementById('results');
+            resultArea.innerHTML = `<p>The uploaded audio is ${percentage.toFixed(2)}% likely to be AI Generated.</p>`;
+        }
+
+        document.getElementById('upload-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const file = event.target.audio_file.files[0];
+            await uploadFile(file);
+        });
+    </script>
+    <body></body>
+</body>
+</html>
